@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyNDER Lite – Task Organizer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>MyNDER Lite</h1>
+      <p class="sub">
+        Paste your brain here. I’ll organize it. (MVP spine)
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>Add a task</h2>
+
+      <form id="taskForm" class="form">
+        <label>
+          Task
+          <input id="taskTitle" type="text" placeholder="e.g., Finish Pursuit assignment" required maxlength="80" />
+        </label>
+
+        <div class="row">
+          <label>
+            Due date
+            <input id="taskDue" type="date" required />
+          </label>
+
+          <label>
+            Est. minutes
+            <input id="taskMins" type="number" min="5" step="5" value="30" required />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit">Add task</button>
+          <button type="button" id="clearAllBtn" class="ghost">Clear all</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="cardHeader">
+        <h2>Your tasks</h2>
+        <div class="actions">
+          <button id="organizeBtn" type="button">Organize</button>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty">
+        No tasks yet. Add one above.
+      </div>
+
+      <ol id="taskList" class="taskList"></ol>
+    </section>
+
+    <section class="card">
+      <h2>What this MVP proves</h2>
+      <ul class="bullets">
+        <li><strong>Aggregation:</strong> tasks are centralized in one place</li>
+        <li><strong>AI-ish prioritization:</strong> a simple urgency score mimics decision support</li>
+        <li><strong>Status tracking:</strong> tasks persist via localStorage</li>
+      </ul>
+    </section>
+
+    <footer class="footer">
+      <small>Built for Pursuit MVP demo: input → logic → output.</small>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
