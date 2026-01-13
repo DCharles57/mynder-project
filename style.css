@@ -62,6 +62,17 @@ button {
   cursor: pointer;
 }
 button:hover { filter: brightness(1.1); }
+button {
+  transition:
+    transform 0.08s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+button:active {
+  transform: translateY(1px);
+}
 
 button.ghost {
   background: transparent;
