@@ -103,7 +103,7 @@ function render(list) {
 
   emptyState.style.display = "none";
 
-  for (const task of list) {
+  for (const [index, task] of list.entries()) {
     const li = document.createElement("li");
     li.className = "taskItem";
 
@@ -122,8 +122,14 @@ function render(list) {
         </div>
       </div>
     `;
+const doneBtn = document.createElement("button");
+doneBtn.className = "remove-btn";
+doneBtn.type = "button";
+doneBtn.textContent = "Done";
+doneBtn.addEventListener("click", () => removeTask(index));
 
-    taskList.appendChild(li);
+li.appendChild(doneBtn);
+taskList.appendChild(li);
   }
 }
 
@@ -167,4 +173,9 @@ function escapeHtml(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+function removeTask(index) {
+  tasks.splice(index, 1);
+  saveTasks(tasks);
+  render(tasks);
 }
