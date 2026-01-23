@@ -1,10 +1,68 @@
+
+/* ===== THEME ===== */
+:root {
+  --bg1: #F7F6FF;
+  --bg2: #ECEBFF;
+  --ink: #1B1B22;
+  --muted: #5A5A78;
+  --accent: #8B7CF6;
+
+  --card-bg: rgba(255,255,255,0.92);
+  --card-border: rgba(139,124,246,0.12);
+  --shadow: 0 18px 45px rgba(139,124,246,0.16);
+}
+
 * { box-sizing: border-box; }
+/* ===== BASE ===== */
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #0b0f14;
-  color: #e9eef5;
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: var(--ink);
+  position: relative;
 }
+/* ====== FORM INPUTS (fixes missing Task box) ====== */
+.form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.form input {
+  width: 100%;
+  display: block;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+
+  box-shadow: 0 8px 20px rgba(139, 124, 246, 0.10);
+  outline: none;
+}
+
+.form input:focus {
+  border-color: rgba(139, 124, 246, 0.55);
+  box-shadow: 0 0 0 4px rgba(139, 124, 246, 0.18);
+}
+
+/* Row layout for Due date + Est. minutes */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Mobile fallback */
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+/* ===== DOODLE BACKGROUND ===== */
+
+
 
 .container {
   max-width: 860px;
@@ -16,12 +74,15 @@ body {
 .sub { margin: 0; opacity: 0.8; }
 
 .card {
-  background: #121826;
-  border: 1px solid #22304a;
-  border-radius: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
   padding: 18px;
   margin-top: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
 }
+
 
 .cardHeader {
   display: flex;
@@ -121,3 +182,124 @@ button.ghost {
 .footer { margin-top: 18px; opacity: 0.7; }
 
 .bullets { margin: 10px 0 0; }
+#emptyState {
+  transition: opacity 0.3s ease;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+}
+/* ===== basic layout ===== */
+.doodle-wrap {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* overlay sits behind your content */
+.doodle-overlay{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;       /* keep subtle */
+  z-index: 0;
+}
+
+/* --- Header layout (locked for mobile) --- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 10px;
+}
+
+/* Logo */
+.brand-logo {
+  height: 36px;
+  width: auto;
+
+  /* animation hook */
+  animation: logoFloatIn 700ms ease-out both;
+}
+
+
+/* Brand text container */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Title */
+.brand-text h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+/* Subtle logo animation */
+@keyframes logoFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* Optional: tiny hover shimmer (desktop only vibe) */
+@media (hover: hover) {
+  .brand-logo:hover {
+    transform: translateY(-1px) scale(1.02);
+    transition: transform 150ms ease;
+  }
+}
+
+.tagline{
+  margin: 2px 0 0;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.app-shell{
+  padding: 18px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.btn-primary{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* ===== WRAPPER DOODLE B ===== */
+.doodle-wrap-b .doodle-overlay{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' opacity='0.9'%3E%3Cpath d='M52 64 c-8 -18 14 -30 26 -18 c10 -12 30 -2 22 14 c10 4 8 20 -6 22 c2 10 -12 18 -20 10 c-6 8 -20 6 -22 -2 c-12 0 -18 -14 0 -26z'/%3E%3Cpath d='M70 92 l10 0'/%3E%3Cpath d='M180 56 c-10 0 -18 8 -18 18 c0 8 4 12 8 16 c2 2 2 6 2 8 h16 c0 -2 0 -6 2 -8 c4 -4 8 -8 8 -16 c0 -10 -8 -18 -18 -18z'/%3E%3Cpath d='M170 108 h20'/%3E%3Cpath d='M176 116 h8'/%3E%3Cpath d='M56 178 l10 -10 l10 10'/%3E%3Cpath d='M66 168 l0 22'/%3E%3Cpath d='M196 190 l14 -6'/%3E%3Cpath d='M200 206 l10 -10'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 260px 260px;
+}
+@media (max-width: 360px) {
+  .brand-logo {
+    height: 28px;
+  }
+
+  .brand-text h1 {
+    font-size: 16px;
+  }
+}

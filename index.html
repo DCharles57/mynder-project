@@ -6,22 +6,31 @@
   <title>MyNDER Lite – Task Organizer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <main class="container">
-    <header class="header">
-      <h1>MyNDER Lite</h1>
-      <p class="sub">
-        Paste your brain here. I’ll organize it. (MVP spine)
-      </p>
-    </header>
+<body class="bg-body-doodle-b">
+  <div class="doodle-wrap doodle-wrap-b">
+    <div class="doodle-overlay"></div>
+
+    <main class="container">
+
+    <header class="header topbar">
+  <img
+   src="./assets/mynder-logo.png" alt="MyNDER logo" class="brand-logo" />
+
+
+
+  <div class="brand-text">
+    <h1 id="heroTitle">MyNDER Lite</h1>
+    <p id="heroSub" class="sub">Paste your brain here. I’ll organize it.</p>
+  </div>
+</header>
 
     <section class="card">
-      <h2>Add a task</h2>
+     <h2 id="addSectionTitle">Add a task</h2>
 
       <form id="taskForm" class="form">
-        <label>
+        <label id="taskLabel">
           Task
-          <input id="taskTitle" type="text" placeholder="e.g., Finish Pursuit assignment" required maxlength="80" />
+          <input id="taskInput" type="text" placeholder="e.g., Finish Pursuit assignment" required maxlength="80" />
         </label>
 
         <div class="row">
@@ -37,27 +46,42 @@
         </div>
 
         <div class="actions">
-          <button type="submit">Add task</button>
-          <button type="button" id="clearAllBtn" class="ghost">Clear all</button>
+          <button id="addBtn" type="submit">Add task</button>
+          <button id="clearBtn" class="ghost">Clear all</button>
+
         </div>
       </form>
     </section>
 
     <section class="card">
       <div class="cardHeader">
-        <h2>Your tasks</h2>
-        <h2>Your tasks</h2>
-<p class="orientation">
+
+       <h2 id="listTitle">Your tasks</h2>
+
+<p id="orientation" class="orientation">
   Here’s everything you listed. I’ll help you choose where to start.
 </p>
+
         <div class="actions">
-  <button id="organizeBtn" type="button">
-    Choose what to do first
-  </button>
+  <button id="helpDecideBtn" class="btn-primary">
+  <span class="btn-icon">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+      <rect x="4" y="4" width="16" height="16" rx="3"
+        stroke="currentColor" stroke-width="2"/>
+      <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
+      <circle cx="15" cy="15" r="1.5" fill="currentColor"/>
+      <circle cx="15" cy="9" r="1.5" fill="currentColor"/>
+      <circle cx="9" cy="15" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+    </svg>
+  </span>
+  Help me decide
+</button>
+
 </div>
       </div>
 
-      <div id="emptyState" class="empty">
+      <div id="emptyState"class="empty"
         No tasks yet. Add one above.
       </div>
 
