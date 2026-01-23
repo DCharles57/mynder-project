@@ -28,29 +28,32 @@
      <h2 id="addSectionTitle">Add a task</h2>
 
       <form id="taskForm" class="form">
-        <label id="taskLabel">
-          Task
-          <input id="taskInput" type="text" placeholder="e.g., Finish Pursuit assignment" required maxlength="80" />
-        </label>
+    <label for="taskInput">One thought or task</label>
+    <input
+      id="taskInput"
+      type="text"
+      placeholder="e.g., Finish Pursuit assignment"
+      required
+    />
 
-        <div class="row">
-          <label>
-            Due date
-            <input id="taskDue" type="date" required />
-          </label>
+    <div class="row">
+      <div class="field">
+        <label for="dueDate">Due date</label>
+        <input id="dueDate" type="date" />
+      </div>
 
-          <label>
-            Est. minutes
-            <input id="taskMins" type="number" min="5" step="5" value="30" required />
-          </label>
-        </div>
+      <div class="field">
+        <label for="minutes">Est. minutes</label>
+        <input id="minutes" type="number" value="30" />
+      </div>
+    </div>
 
-        <div class="actions">
-          <button id="addBtn" type="submit">Add task</button>
-          <button id="clearBtn" class="ghost">Clear all</button>
-
-        </div>
-      </form>
+    <div class="actions">
+      <button type="submit">Add it</button>
+      <button type="button" id="clearAll">Clear</button>
+    </div>
+  </form>
+</section>
     </section>
 
     <section class="card">
