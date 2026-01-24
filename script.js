@@ -1,4 +1,25 @@
 
+
+// 👇 ADD THIS LINE
+let chosenTaskId = null;
+
+// Empty state rotation control
+let emptyStateInterval = null;
+
+function rotateEmptyState() {
+  if (emptyStateInterval) return;
+
+  emptyStateInterval = setInterval(() => {
+    // optional: rotate text / animation later
+  }, 2500);
+}
+
+function stopEmptyState() {
+  if (!emptyStateInterval) return;
+  clearInterval(emptyStateInterval);
+  emptyStateInterval = null;
+}
+
 // MyNDER Lite MVP
 // Spine: input -> simple priority logic -> ordered output
 // Persistence: localStorage
@@ -99,7 +120,7 @@ function applyCopySkin() {
 }
 
 // Run after DOM is ready so IDs exist
-let emptyStateInterval = null;
+
 
 function rotateEmptyState() {
   const emptyEl = document.getElementById("emptyState");
@@ -136,11 +157,13 @@ const STORAGE_KEY = "mynder_lite_tasks_v1";
 const taskForm = document.getElementById("taskForm");
 const taskInput = document.getElementById("taskInput");
 const taskDue = document.getElementById("taskDue");
-const taskMins = document.getElementById("taskMins");
-const taskList = document.getElementById("taskList");
-const emptyState = document.getElementById("emptyState");
-const organizeBtn = document.getElementById("organizeBtn");
+const taskMins = document.getElementById("taskMins");      // ✅ minutes input
+const taskList = document.getElementById("taskList");      // ✅ the <ol>
+const emptyState = document.getElementById("emptyState");  // ✅ the empty message div
+
+const decideBtn = document.getElementById("decideBtn");    // if it exists
 const clearAllBtn = document.getElementById("clearAllBtn");
+
 
 let tasks = loadTasks();
 render(tasks);
@@ -154,10 +177,12 @@ taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const title = taskInput.value.trim();
-  const due = taskDue.value;
+  const due = taskDue.value || null;
   const mins = Number(taskMins.value);
 
-  if (!title || !due || !Number.isFinite(mins) || mins <= 0) return;
+  // guard clauses
+  if (!title) return;
+  if (!Number.isFinite(mins) || mins <= 0) return;
 
   const newTask = {
     id: crypto.randomUUID(),
@@ -165,16 +190,20 @@ taskForm.addEventListener("submit", (e) => {
     due,
     mins,
     createdAt: new Date().toISOString(),
+    done: false,
   };
 
+  // update state
   tasks.push(newTask);
   saveTasks(tasks);
   render(tasks);
 
-taskInput.value = "";
-taskInput.focus();
-
+  // reset UI
+  taskForm.reset();
+  taskMins.value = 30;
+  stopEmptyState();
 });
+
 
 organizeBtn.addEventListener("click", () => {
   // Sort by urgency score (higher first), then sooner due date
@@ -189,6 +218,7 @@ organizeBtn.addEventListener("click", () => {
   });
 
   tasks = organized;
+  chosenTaskId = tasks[0].id;
   saveTasks(tasks);
   render(tasks);
 });
@@ -230,42 +260,72 @@ function urgencyScore(task) {
 function render(list) {
   taskList.innerHTML = "";
 
-  if (!list.length) {
+  if (!list || !list.length) {
     emptyState.style.display = "block";
     return;
   }
-
   emptyState.style.display = "none";
 
-  for (const [index, task] of list.entries()) {
+  // SAFE fallbacks so render can never crash
+  const safeEscape = (v) =>
+    (typeof escapeHtml === "function")
+      ? escapeHtml(String(v ?? ""))
+      : String(v ?? "");
+
+  const safeUrgency = (t) =>
+    (typeof urgencyScore === "function") ? urgencyScore(t) : 0;
+
+  const safeDaysUntil = (d) =>
+    (typeof daysUntil === "function") ? daysUntil(d) : null;
+
+  const safeDaysLabel = (n) =>
+    (typeof daysLeftLabel === "function") ? daysLeftLabel(n) : "";
+
+  list.forEach((task, index) => {
     const li = document.createElement("li");
     li.className = "taskItem";
 
-    const score = urgencyScore(task);
-    const daysLeft = daysUntil(task.due);
-    const label = daysLeftLabel(daysLeft);
+    if (typeof chosenTaskId !== "undefined" && task.id === chosenTaskId) {
+      li.classList.add("chosen");
+    }
+
+    const score = safeUrgency(task);
+    const daysLeft = safeDaysUntil(task.due);
+    const label = safeDaysLabel(daysLeft);
+
+    const urgencyClass =
+      score >= 80 ? "u-high" :
+      score >= 50 ? "u-med"  :
+      "u-low";
 
     li.innerHTML = `
-      <div class="taskTop">
-        <strong>${escapeHtml(task.title)}</strong>
-        <div class="badges">
-          <span class="badge">Due: ${escapeHtml(task.due)}</span>
-          <span class="badge">Est: ${task.mins}m</span>
-          <span class="badge">Urgency: ${score}</span>
-          <span class="badge">${escapeHtml(label)}</span>
+      <div class="taskRow">
+        <div class="taskMain">
+          <span class="taskTitle">${safeEscape(task.title)}</span>
+
+          <div class="badges">
+            <span class="badge">Due: ${task.due ? safeEscape(task.due) : "—"}</span>
+            <span class="badge">Est: ${Number(task.mins) || 0}m</span>
+            <span class="badge ${urgencyClass}">Urgency: ${score}</span>
+            <span class="badge">${safeEscape(label)}</span>
+          </div>
         </div>
+
+        <button class="doneBtn" type="button">Done</button>
       </div>
     `;
-const doneBtn = document.createElement("button");
-doneBtn.className = "remove-btn";
-doneBtn.type = "button";
-doneBtn.textContent = "Done";
-doneBtn.addEventListener("click", () => removeTask(index));
 
-li.appendChild(doneBtn);
-taskList.appendChild(li);
-  }
+    taskList.appendChild(li);
+
+    // entry animation (safe even if CSS missing)
+    requestAnimationFrame(() => li.classList.add("is-entered"));
+
+    li.querySelector(".doneBtn").addEventListener("click", () => {
+      removeTask(index);
+    });
+  });
 }
+
 
 function daysUntil(due) {
   const today = startOfDay(new Date());
@@ -290,16 +350,33 @@ function saveTasks(list) {
 }
 
 function loadTasks() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-
   try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+
+    if (!Array.isArray(parsed)) return [];
+
+    // Keep only valid tasks (prevents {} from breaking UI)
+    return parsed.filter(t =>
+      t &&
+      typeof t.title === "string" &&
+      t.title.trim().length > 0 &&
+      Number.isFinite(Number(t.mins)) &&
+      Number(t.mins) > 0
+    ).map(t => ({
+      id: t.id || crypto.randomUUID(),
+      title: t.title.trim(),
+      due: t.due || null,
+      mins: Number(t.mins),
+      createdAt: t.createdAt || new Date().toISOString(),
+      done: Boolean(t.done),
+    }));
+  } catch (err) {
+    console.error("loadTasks failed:", err);
     return [];
   }
 }
+
 
 
 

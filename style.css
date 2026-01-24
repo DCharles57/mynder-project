@@ -303,3 +303,108 @@ button.ghost {
     font-size: 16px;
   }
 }
+.taskItem {
+  background: #111;
+  color: white;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.taskRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.taskTitle {
+  font-size: 16px;
+}
+
+.doneBtn {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+/* ---------- Badges ---------- */
+.badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(6px);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* urgency colors */
+.badge--low {
+  background: rgba(46, 204, 113, 0.18);
+  border-color: rgba(46, 204, 113, 0.35);
+}
+
+.badge--med {
+  background: rgba(241, 196, 15, 0.20);
+  border-color: rgba(241, 196, 15, 0.40);
+}
+
+.badge--high {
+  background: rgba(231, 76, 60, 0.18);
+  border-color: rgba(231, 76, 60, 0.35);
+}
+
+/* Make the urgency badge pop slightly */
+.badge--urgency {
+  font-weight: 700;
+  transform: translateY(-1px);
+}
+
+/* ---------- Subtle entry animation for tasks ---------- */
+.taskItem {
+  opacity: 0;
+  transform: translateY(8px) scale(0.995);
+  transition: opacity 220ms ease, transform 240ms ease;
+  will-change: opacity, transform;
+}
+
+.taskItem.is-entered {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* highlight chosen task */
+.taskItem.is-chosen {
+  outline: 2px solid rgba(0,0,0,0.14);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+}
+
+/* Optional: subtle pulse when chosen */
+@keyframes chosenPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+.taskItem.is-chosen.is-entered {
+  animation: chosenPulse 380ms ease;
+}
+.taskItem {
+  /* existing styles */
+}
+
+.taskItem.chosen {
+  outline: 2px solid #6b8afd;
+  box-shadow: 0 0 0 4px rgba(107, 138, 253, 0.15);
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
